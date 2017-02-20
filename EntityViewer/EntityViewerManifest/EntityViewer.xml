@@ -11,7 +11,7 @@
     <Capability Name="Mailbox" />
   </Capabilities>
   <DesktopSettings>
-    <SourceLocation DefaultValue="~remoteAppUrl/AppRead/Home/Home.html"/>
+    <SourceLocation DefaultValue="https://entityviewer2.azurewebsites.net/AppRead/Home/Home.html"/>
     <RequestedHeight>350</RequestedHeight>
   </DesktopSettings>
   <Permissions>ReadWriteMailbox</Permissions>

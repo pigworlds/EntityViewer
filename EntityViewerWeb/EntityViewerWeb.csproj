@@ -42,6 +42,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="..\EntityViewer\EntityViewerManifest\EntityViewer.xml">
+      <Link>EntityViewer.xml</Link>
+    </Content>
     <Content Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
