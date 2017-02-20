@@ -14,21 +14,72 @@
 
     // Displays the "Subject" and "From" fields, based on the current mail item
     function displayItemDetails() {
-        var item = Office.cast.item.toItemRead(Office.context.mailbox.item);
-        $('#subject').text(item.subject);
 
-        var from;
-        if (item.itemType === Office.MailboxEnums.ItemType.Message) {
-            from = Office.cast.item.toMessageRead(item).from;
-        } else if (item.itemType === Office.MailboxEnums.ItemType.Appointment) {
-            from = Office.cast.item.toAppointmentRead(item).organizer;
-        }
+        //Grab mailbox and make EWS 
+        var mailbox = Office.context.mailbox;
+        $('#itemId').text(mailbox.item.itemId);
+        var request = getItemRequest(mailbox.item.itemId);
+        var envelope = getSoapEnvelope(request);
 
-        if (from) {
-            $('#from').text(from.displayName);
-            $('#from').click(function () {
-                app.showNotification(from.displayName, from.emailAddress);
-            });
-        }
+        mailbox.makeEwsRequestAsync(envelope, ewsCallback);
+
+    }
+
+    function getSoapEnvelope(request) {
+        // Wrap an Exchange Web Services request in a SOAP envelope.
+        var result =
+
+        '<?xml version="1.0" encoding="utf-8"?>' +
+        '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+        '               xmlns:xsd="http://www.w3.org/2001/XMLSchema"' +
+        '               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"' +
+        '               xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">' +
+        '  <soap:Header>' +
+        '    <t:RequestServerVersion Version="Exchange2010"/>' +
+        '  </soap:Header>' +
+        '  <soap:Body>' +
+
+        request +
+
+        '  </soap:Body>' +
+        '</soap:Envelope>';
+
+        return result;
+    };
+
+    function getItemRequest(id) {
+        // Return a GetItem EWS operation request for the subject of the specified item. 
+        var result =
+        '<GetItem ' +
+        '      xmlns="http://schemas.microsoft.com/exchange/services/2006/messages"' +
+        '      xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">' +
+        '      <ItemShape>' +
+        '        <t:BaseShape>IdOnly</t:BaseShape>' +
+        '        <t:AdditionalProperties>' +
+        '            <t:ExtendedFieldURI DistinguishedPropertySetId="Common"' +
+        '                                PropertyName="EntityDocument"' +
+        '                                PropertyType="String"/>' +
+        '        </t:AdditionalProperties>' +
+        '      </ItemShape>' +
+        '      <ItemIds><t:ItemId Id="' + id + '"/></ItemIds>' +
+        '    </GetItem>';	
+        return result;
+    };
+
+    function ewsCallback(asyncResult) {
+        var response = asyncResult.value;
+        var context = asyncResult.context;
+
+        var $xml = $(response);
+
+        var jsonString = $xml.find('t\\:Value').text();
+		// var jsonString = $xml.text();
+
+        if (!jsonString)
+            $('#json').text("no entities found :(");
+        else
+            $('#json').html( JSON.stringify(JSON.parse(jsonString), null, '    '));
+			// $('#json').html(jsonString.text());
+    
     }
 })();

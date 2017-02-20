@@ -17,3 +17,8 @@
     #from:focus, #from:hover, #from:active {
         color: #4ea2df;
     }
+
+#content-main {
+    height: 350px;
+}
+
