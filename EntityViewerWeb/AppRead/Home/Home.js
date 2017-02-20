@@ -8,12 +8,14 @@
         $(document).ready(function () {
             app.initialize();
 
-            displayItemDetails();
+            displayEntityDocument();
+
+            displayBuiltInEntities();
         });
     };
 
-    // Displays the "Subject" and "From" fields, based on the current mail item
-    function displayItemDetails() {
+    // Displays the "EntityDocument" fields, based on the current mail item
+    function displayEntityDocument() {
 
         //Grab mailbox and make EWS 
         var mailbox = Office.context.mailbox;
@@ -22,9 +24,13 @@
         var envelope = getSoapEnvelope(request);
 
         mailbox.makeEwsRequestAsync(envelope, ewsCallback);
-        
+    }
+
+    // Displays the built-in entities, based on the current mail item
+    function displayBuiltInEntities()
+    {
         var entities = Office.context.mailbox.item.getEntities();
-        
+
         displayEntities(entities.addresses, "Addresses");
         displayEntities(entities.contacts, "Contacts");
         displayEntities(entities.emailAddresses, "Email Addresses");
@@ -33,7 +39,7 @@
         displayEntities(entities.taskSuggestions, "Task Suggestions");
         displayEntities(entities.urls, "URLs");
     }
-    
+
     function displayEntities(entities, typeName)
     {
         if (entities == null || entities.length == 0)
@@ -56,7 +62,6 @@
     function getSoapEnvelope(request) {
         // Wrap an Exchange Web Services request in a SOAP envelope.
         var result =
-
         '<?xml version="1.0" encoding="utf-8"?>' +
         '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
         '               xmlns:xsd="http://www.w3.org/2001/XMLSchema"' +
@@ -66,9 +71,7 @@
         '    <t:RequestServerVersion Version="Exchange2010"/>' +
         '  </soap:Header>' +
         '  <soap:Body>' +
-
         request +
-
         '  </soap:Body>' +
         '</soap:Envelope>';
 
