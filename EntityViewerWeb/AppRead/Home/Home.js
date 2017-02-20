@@ -132,7 +132,7 @@
         }
 
         var jsonString = svp[0].Value;
-        $('#json').html( JSON.stringify(JSON.parse(jsonString), null, '    '));
+        $('#json').JSONView(JSON.parse(jsonString));
     }
 
     function restCallbackFailed(error)
