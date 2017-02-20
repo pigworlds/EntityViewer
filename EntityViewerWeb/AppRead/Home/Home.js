@@ -99,11 +99,11 @@
         var restUrl = Office.context.mailbox.restUrl;
         if (restUrl == null)
         {
-            restUrl = "https://outlook.office365.com";
+            restUrl = "https://outlook.office365.com/api";
         }
 
         return restUrl
-            + '/api/v2.0/me/messages/'
+            + '/v2.0/me/messages/'
             + itemId
             + "/?$expand=SingleValueExtendedProperties($filter=PropertyId eq 'String {00062008-0000-0000-C000-000000000046} Name EntityDocument')";
     }
