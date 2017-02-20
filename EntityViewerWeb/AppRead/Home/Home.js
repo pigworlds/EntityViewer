@@ -22,7 +22,35 @@
         var envelope = getSoapEnvelope(request);
 
         mailbox.makeEwsRequestAsync(envelope, ewsCallback);
-
+        
+        var entities = Office.context.mailbox.item.getEntities();
+        
+        displayEntities(entities.addresses, "Addresses");
+        displayEntities(entities.contacts, "Contacts");
+        displayEntities(entities.emailAddresses, "Email Addresses");
+        displayEntities(entities.meetingSuggestions, "Meeting Suggestions");
+        displayEntities(entities.phoneNumbers, "Phone Numbers");
+        displayEntities(entities.taskSuggestions, "Task Suggestions");
+        displayEntities(entities.urls, "URLs");
+    }
+    
+    function displayEntities(entities, typeName)
+    {
+        if (entities == null || entities.length == 0)
+        {
+            return;
+        }
+        
+        $('#entity').append("<p>" + typeName + "</p>");
+        var appendText = "<ul>";
+        for (var i = 0; i < entities.length; i++)
+        {
+            appendText += "<li>";
+            appendText += JSON.stringify(entities[i]);
+            appendText += "</li>";
+        }
+        appendText += "</ul>";
+        $('#entity').append(appendText);
     }
 
     function getSoapEnvelope(request) {
@@ -62,7 +90,7 @@
         '        </t:AdditionalProperties>' +
         '      </ItemShape>' +
         '      <ItemIds><t:ItemId Id="' + id + '"/></ItemIds>' +
-        '    </GetItem>';	
+        '    </GetItem>';    
         return result;
     };
 
@@ -73,13 +101,11 @@
         var $xml = $(response);
 
         var jsonString = $xml.find('t\\:Value').text();
-		// var jsonString = $xml.text();
 
         if (!jsonString)
-            $('#json').text("no entities found :(");
+            $('#json').text("no EntityDocument entities found :(");
         else
             $('#json').html( JSON.stringify(JSON.parse(jsonString), null, '    '));
-			// $('#json').html(jsonString.text());
     
     }
 })();
