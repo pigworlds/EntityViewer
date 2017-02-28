@@ -130,9 +130,11 @@
         {
             $('#json').text("no EntityDocument entities found :(");
         }
-
-        var jsonString = svp[0].Value;
-        $('#json').JSONView(JSON.parse(jsonString));
+        else
+        {
+            var jsonString = svp[0].Value;
+            $('#json').JSONView(JSON.parse(jsonString));
+        }
     }
 
     function restCallbackFailed(error)
