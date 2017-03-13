@@ -45,6 +45,9 @@
     <Content Include="..\EntityViewer\EntityViewerManifest\EntityViewer.xml">
       <Link>EntityViewer.xml</Link>
     </Content>
+    <Content Include="..\EntityViewer\EntityViewerManifest\EntityViewerAC.xml">
+      <Link>EntityViewerAC.xml</Link>
+    </Content>
     <Content Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

@@ -43,6 +43,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="EntityViewerManifest\EntityViewerAC.xml" />
     <None Include="EntityViewerManifest\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{485c5e89-c8f1-4ee3-ba14-dd98829f2b56}</SharePointProjectItemId>
     </None>
