@@ -45,6 +45,9 @@
     <Content Include="..\EntityViewer\EntityViewerManifest\EntityViewer.xml">
       <Link>EntityViewer.xml</Link>
     </Content>
+    <Content Include="..\EntityViewer\EntityViewerManifest\EntityViewerAC.xml">
+      <Link>EntityViewerAC.xml</Link>
+    </Content>
     <Content Include="AppRead\Home\jquery.jsonview.css" />
     <Content Include="AppRead\Home\jquery.jsonview.js" />
     <Content Include="packages.config" />
