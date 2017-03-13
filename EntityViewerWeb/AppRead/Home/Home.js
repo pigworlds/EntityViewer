@@ -90,10 +90,31 @@
         '            <t:ExtendedFieldURI DistinguishedPropertySetId="Common"' +
         '                                PropertyName="EntityDocument"' +
         '                                PropertyType="String"/>' +
+        '            <t:ExtendedFieldURI PropertySetId="23239608-685D-4732-9C55-4C95CB4E8E33"' +
+        '                                PropertyName="XmlExtractedTasks"' +
+        '                                PropertyType="String"/>' +
+        '            <t:ExtendedFieldURI PropertySetId="23239608-685D-4732-9C55-4C95CB4E8E33"' +
+        '                                PropertyName="XmlExtractedMeetings"' +
+        '                                PropertyType="String"/>' +
+        '            <t:ExtendedFieldURI PropertySetId="23239608-685D-4732-9C55-4C95CB4E8E33"' +
+        '                                PropertyName="XmlExtractedAddresses"' +
+        '                                PropertyType="String"/>' +
+        '            <t:ExtendedFieldURI PropertySetId="23239608-685D-4732-9C55-4C95CB4E8E33"' +
+        '                                PropertyName="XmlExtractedPhones"' +
+        '                                PropertyType="String"/>' +
+        '            <t:ExtendedFieldURI PropertySetId="23239608-685D-4732-9C55-4C95CB4E8E33"' +
+        '                                PropertyName="XmlExtractedEmails"' +
+        '                                PropertyType="String"/>' +
+        '            <t:ExtendedFieldURI PropertySetId="23239608-685D-4732-9C55-4C95CB4E8E33"' +
+        '                                PropertyName="XmlExtractedUrls"' +
+        '                                PropertyType="String"/>' +
+        '            <t:ExtendedFieldURI PropertySetId="23239608-685D-4732-9C55-4C95CB4E8E33"' +
+        '                                PropertyName="XmlExtractedContacts"' +
+        '                                PropertyType="String"/>' +
         '        </t:AdditionalProperties>' +
         '      </ItemShape>' +
         '      <ItemIds><t:ItemId Id="' + id + '"/></ItemIds>' +
-        '    </GetItem>';    
+        '    </GetItem>';
         return result;
     };
 
@@ -103,12 +124,33 @@
 
         var $xml = $(response);
 
-        var jsonString = $xml.find('t\\:Value').text();
+        var $eps = $xml.find('t\\:ExtendedProperty');
+        var hasEntityDocument = false;
+        var hasLegacyProps = false;
+        var legacyProps = "";
 
-        if (!jsonString)
+        try {
+            for (var i = 0; i < $eps.length; i++) {
+                var propName = $eps[i].children[0].attributes.getNamedItem('propertyName').value;
+                var propValue = $eps[i].children[1].innerText;
+                if (propName == "EntityDocument") {
+                    $('#json').html(JSON.stringify(JSON.parse(propValue), null, '    '));
+                    hasEntityDocument = true;
+                }
+                else {
+                    legacyProps += propName + "\n" + propValue + "\n\n";
+                    hasLegacyProps = true;
+                }
+            }
+        }
+        catch (e) {
+             $('#error').text(e);
+             $('#errorTitle').text('Error encountered while parsing EWS response: ');
+        }
+
+        if (!hasEntityDocument) {
             $('#json').text("no EntityDocument entities found :(");
-        else
-            $('#json').html( JSON.stringify(JSON.parse(jsonString), null, '    '));
-    
+        }
+        $('#legacyProps').text(hasLegacyProps ? legacyProps : "no Legacy Properties found :(");
     }
 })();
