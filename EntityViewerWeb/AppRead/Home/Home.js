@@ -8,11 +8,18 @@
         $(document).ready(function () {
             app.initialize();
 
-            displayEntityDocument();
+            // Set up ItemChanged event
+            Office.context.mailbox.addHandlerAsync(Office.EventType.ItemChanged, itemChanged);
 
+            displayEntityDocument();
             displayBuiltInEntities();
         });
     };
+
+    function itemChanged(eventArgs) {
+        displayEntityDocument();
+        displayBuiltInEntities();
+    }
 
     // Displays the "EntityDocument" fields, based on the current mail item
     function displayEntityDocument() {
