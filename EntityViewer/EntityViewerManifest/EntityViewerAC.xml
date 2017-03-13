@@ -24,7 +24,7 @@
       </DesktopSettings>
     </Form>
   </FormSettings>
-  <Permissions>ReadItem</Permissions>
+  <Permissions>ReadWriteMailbox</Permissions>
   <Rule xsi:type="ItemIs" ItemType="Message" FormType="Read"/>
   <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides" xsi:type="VersionOverridesV1_0">
     <Requirements>
