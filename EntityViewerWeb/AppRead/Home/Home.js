@@ -101,6 +101,10 @@
         {
             restUrl = "https://outlook.office365.com/api";
         }
+        else if (!restUrl.match("/api$"))
+        {
+            restUrl += "/api";
+        }
 
         return restUrl
             + '/v2.0/me/messages/'
