@@ -8,26 +8,39 @@
         $(document).ready(function () {
             app.initialize();
 
-            // Set up ItemChanged event
-            Office.context.mailbox.addHandlerAsync(Office.EventType.ItemChanged, itemChanged);
+            displayItem(Office.context.mailbox.item);
 
-            displayEntityDocument();
-            displayBuiltInEntities();
+            // Set up ItemChanged event
+            // This may fail on Outlook Mobile. Skipping right now.
+            Office.context.mailbox.addHandlerAsync(Office.EventType.ItemChanged, itemChanged);
         });
     };
 
+    function displayItem(item) {
+        clearOutput();
+        displayEntityDocument(item);
+        displayBuiltInEntities(item);
+    }
+
+    function clearOutput() {
+        $('#itemId').text('');
+        $('#json').text('');
+        $('#entity').text('');
+    }
+
     function itemChanged(eventArgs) {
-        displayEntityDocument();
-        displayBuiltInEntities();
+        displayItem(Office.context.mailbox.item);
     }
 
     // Displays the "EntityDocument" fields, based on the current mail item
-    function displayEntityDocument() {
+    function displayEntityDocument(item) {
         //Grab mailbox and make rest call
-        var itemId = getItemRestId();
+        var itemId = getItemRestId(item);
         $('#itemId').text(itemId);
 
-        Office.context.mailbox.getCallbackTokenAsync({ isRest: true }, getTokenCallback);
+        if (itemId != null) {
+            Office.context.mailbox.getCallbackTokenAsync({ isRest: true, asyncContext: item }, getTokenCallback);
+        }
     }
 
     function getTokenCallback(result)
@@ -35,9 +48,10 @@
         if (result.status === "succeeded")
         {
             var accessToken = result.value;
+            var item = result.asyncContext;
 
             // Use the access token
-            getCurrentItem(accessToken);
+            getCurrentItem(accessToken, item);
         }
         else
         {
@@ -46,9 +60,14 @@
     }
 
     // Displays the built-in entities, based on the current mail item
-    function displayBuiltInEntities()
+    function displayBuiltInEntities(item)
     {
-        var entities = Office.context.mailbox.item.getEntities();
+        if (item == null)
+        {
+            return;
+        }
+
+        var entities = item.getEntities();
 
         displayEntities(entities.addresses, "Addresses");
         displayEntities(entities.contacts, "Contacts");
@@ -78,20 +97,25 @@
         $('#entity').append(appendText);
     }
 
-    function getItemRestId()
+    function getItemRestId(item)
     {
+        if (item == null)
+        {
+            return null;
+        }
+
         // Currently the only Outlook Mobile version that supports add-ins
         // is Outlook for iOS.
         if (Office.context.mailbox.diagnostics.hostName === 'OutlookIOS')
         {
             // itemId is already REST-formatted
-            return Office.context.mailbox.item.itemId;
+            return item.itemId;
         }
         else
         {
             // Convert to an item ID for API v2.0
             return Office.context.mailbox.convertToRestId(
-              Office.context.mailbox.item.itemId,
+              item.itemId,
               Office.MailboxEnums.RestVersion.v2_0
             );
         }
@@ -119,12 +143,12 @@
             + "/?$expand=SingleValueExtendedProperties($filter=PropertyId eq 'String {00062008-0000-0000-C000-000000000046} Name EntityDocument')";
     }
 
-    function getCurrentItem(accessToken)
+    function getCurrentItem(accessToken, item)
     {
         $('#json').text("calling REST API");
 
         // Get the item's REST ID
-        var itemId = getItemRestId();
+        var itemId = getItemRestId(item);
 
         var getMessageUrl = getRestUrl(itemId);
 
