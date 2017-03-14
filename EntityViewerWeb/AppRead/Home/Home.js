@@ -26,6 +26,7 @@
         $('#itemId').text('');
         $('#json').text('');
         $('#entity').text('');
+        $('#property').text('');
     }
 
     function itemChanged(eventArgs) {
@@ -138,9 +139,18 @@
         }
 
         return restUrl
-            + '/v2.0/me/messages/'
+            + "/v2.0/me/messages/"
             + itemId
-            + "/?$expand=SingleValueExtendedProperties($filter=PropertyId eq 'String {00062008-0000-0000-C000-000000000046} Name EntityDocument')";
+            + "/?$select = id"
+            + "&$expand = SingleValueExtendedProperties($filter = "
+            + "(PropertyId eq 'String {00062008-0000-0000-c000-000000000046} Name EntityDocument')"
+            + " or "
+            + "(PropertyId eq 'Boolean {00062008-0000-0000-c000-000000000046} Name EntityExtractionSuccess')"
+            + " or "
+            + "(PropertyId eq 'String {00062008-0000-0000-c000-000000000046} Name EntityExtractionServiceDiagnosticContext')"
+            + " or "
+            + "(PropertyId eq 'String {00062008-0000-0000-c000-000000000046} Name TeeVersion')"
+            + ")";
     }
 
     function getCurrentItem(accessToken, item)
@@ -161,14 +171,35 @@
     {
         var svp = item.SingleValueExtendedProperties;
 
-        if (svp == null || svp.length == 0)
+        var found = false;
+        if (svp != null && svp.length > 0)
+        {
+            for (var prop in svp)
+            {
+                var id = svp[prop].PropertyId;
+                var value = svp[prop].Value; 
+                switch (id)
+                {
+                    case 'String {00062008-0000-0000-c000-000000000046} Name EntityDocument':
+                        found = true;
+                        $('#json').JSONView(JSON.parse(value));
+                        break;
+                    case 'Boolean {00062008-0000-0000-c000-000000000046} Name EntityExtractionSuccess':
+                        $('#property').append("<p>Entity Extraction Success: " + value + "</p>");
+                        break;
+                    case 'String {00062008-0000-0000-c000-000000000046} Name EntityExtractionServiceDiagnosticContext':
+                        $('#property').append("<p>Debug context: " + value + "</p>");
+                        break;
+                    case 'String {00062008-0000-0000-c000-000000000046} Name TeeVersion':
+                        $('#property').append("<p>TeeVersion: " + value + "</p>");
+                        break;
+                }
+            }
+        }
+
+        if (!found)
         {
             $('#json').text("no EntityDocument entities found :(");
-        }
-        else
-        {
-            var jsonString = svp[0].Value;
-            $('#json').JSONView(JSON.parse(jsonString));
         }
     }
 
