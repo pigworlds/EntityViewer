@@ -1,4 +1,4 @@
-/// <reference path="../App.js" />
+﻿/// <reference path="../App.js" />
 
 (function () {
     "use strict";
@@ -198,7 +198,8 @@
                         $('#property').append("<p>Entity Extraction Success: " + value + "</p>");
                         break;
                     case 'String {00062008-0000-0000-c000-000000000046} Name EntityExtractionServiceDiagnosticContext':
-                        $('#property').append("<p>Debug context: " + value + "</p>");
+                        var js = $('<div />').JSONView(JSON.parse(value));
+                        $('#property').append("<p>Debug context: </p>").append(js);
                         break;
                     case 'String {00062008-0000-0000-c000-000000000046} Name TeeVersion':
                         $('#property').append("<p>TeeVersion: " + value + "</p>");
