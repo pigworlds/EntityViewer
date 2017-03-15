@@ -50,6 +50,7 @@
         $('#itemId').text(itemId);
 
         if (itemId != null) {
+            showMessage("Getting callback token...")
             Office.context.mailbox.getCallbackTokenAsync({ isRest: true, asyncContext: item }, getTokenCallback);
         }
     }
@@ -165,7 +166,7 @@
 
     function getCurrentItem(accessToken, item)
     {
-        $('#json').text("calling REST API");
+        showMessage("Calling REST API...");
 
         // Get the item's REST ID
         var itemId = getItemRestId(item);
@@ -179,6 +180,8 @@
 
     function restCallback(item)
     {
+        showMessage("Parsing response");
+
         var svp = item.SingleValueExtendedProperties;
 
         var found = false;
@@ -212,15 +215,30 @@
         {
             $('#json').text("no EntityDocument entities found :(");
         }
+
+        $('#notification-message').hide();
+
+        hideMessage();
     }
 
     function restCallbackFailed(error)
     {
-        $('#json').text("call REST failed :( " + error.responseText);
+        showMessage("Call REST failed :( " + error.responseText);
     }
 
     function getTokenFailed(error)
     {
-        $('#json').text("get REST token failed :(");
+        showMessage("Get REST token failed :(");
+    }
+
+    function showMessage(text, header)
+    {
+        $('#json').text(text);
+        app.showNotification(header, text);
+    }
+
+    function hideMessage()
+    {
+        app.hideNotification();
     }
 })();
