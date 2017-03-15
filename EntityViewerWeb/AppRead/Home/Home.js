@@ -1,4 +1,4 @@
-﻿/// <reference path="../App.js" />
+/// <reference path="../App.js" />
 
 (function () {
     "use strict";
@@ -10,9 +10,10 @@
 
             displayItem(Office.context.mailbox.item);
 
-            // Set up ItemChanged event
-            // This may fail on Outlook Mobile. Skipping right now.
-            Office.context.mailbox.addHandlerAsync(Office.EventType.ItemChanged, itemChanged);
+            if (isPersistenceSupported()) {
+                // Set up ItemChanged event
+                Office.context.mailbox.addHandlerAsync(Office.EventType.ItemChanged, itemChanged);
+            }
         });
     };
 
@@ -27,6 +28,15 @@
         $('#json').text('');
         $('#entity').text('');
         $('#property').text('');
+    }
+
+    function isPersistenceSupported() {
+        // This feature is part of the preview 1.5 req set
+        // Since 1.5 isn't fully implemented, just check that the 
+        // method is defined.
+        // Once 1.5 is implemented, we can replace this with
+        // Office.context.requirements.isSetSupported('Mailbox', 1.5)
+        return Office.context.mailbox.addHandlerAsync !== undefined;
     }
 
     function itemChanged(eventArgs) {
