@@ -226,9 +226,9 @@
         showMessage("Call REST failed :( " + error.responseText);
     }
 
-    function getTokenFailed(error)
+    function getTokenFailed(result)
     {
-        showMessage("Get REST token failed :(");
+        showMessage("Get REST token failed :( " + JSON.stringify(result.error));
     }
 
     function showMessage(text, header)
