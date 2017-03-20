@@ -140,9 +140,14 @@
         // https://msdn.microsoft.com/office/office365/APi/mail-rest-operations#get-a-message-rest
 
         var restUrl = Office.context.mailbox.restUrl;
+
         if (restUrl == null)
         {
             restUrl = "https://outlook.office365.com/api";
+        }
+        else if (restUrl.match("/api/$"))
+        {
+            restUrl = restUrl.slice(0, -1);
         }
         else if (!restUrl.match("/api$"))
         {
@@ -172,7 +177,7 @@
         var itemId = getItemRestId(item);
 
         var getMessageUrl = getRestUrl(itemId);
-
+        
         $.ajax({ url: getMessageUrl, dataType: 'json', headers: { 'Authorization': 'Bearer ' + accessToken } })
             .done(restCallback)
             .fail(restCallbackFailed);
@@ -223,7 +228,7 @@
 
     function restCallbackFailed(error)
     {
-        showMessage("Call REST failed :( " + error.responseText);
+        showMessage("Call REST failed :( " + error.status + " " + error.statusText + " " + error.responseText);
     }
 
     function getTokenFailed(result)
