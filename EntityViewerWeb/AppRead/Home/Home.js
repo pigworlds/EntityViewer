@@ -186,6 +186,7 @@
     function restCallback(item)
     {
         showMessage("Parsing response");
+        $('#property').text('');
 
         var svp = item.SingleValueExtendedProperties;
 
@@ -220,8 +221,6 @@
         {
             $('#json').text("no EntityDocument entities found :(");
         }
-
-        $('#notification-message').hide();
 
         hideMessage();
     }
