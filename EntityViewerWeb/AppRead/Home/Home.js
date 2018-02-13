@@ -161,6 +161,8 @@
             + "&$expand = SingleValueExtendedProperties($filter = "
             + "(PropertyId eq 'String {00062008-0000-0000-c000-000000000046} Name EntityDocument')"
             + " or "
+            + "(PropertyId eq 'String {00062008-0000-0000-c000-000000000046} Name EntityDocumentDelayed')"
+            + " or "
             + "(PropertyId eq 'Boolean {00062008-0000-0000-c000-000000000046} Name EntityExtractionSuccess')"
             + " or "
             + "(PropertyId eq 'String {00062008-0000-0000-c000-000000000046} Name EntityExtractionServiceDiagnosticContext')"
@@ -202,6 +204,10 @@
                     case 'String {00062008-0000-0000-c000-000000000046} Name EntityDocument':
                         found = true;
                         $('#json').JSONView(JSON.parse(value));
+                        break;
+                    case 'String {00062008-0000-0000-c000-000000000046} Name EntityDocumentDelayed':
+                        found = true;
+                        $('#jsonDelayed').JSONView(JSON.parse(value));
                         break;
                     case 'Boolean {00062008-0000-0000-c000-000000000046} Name EntityExtractionSuccess':
                         $('#property').append("<p>Entity Extraction Success: " + value + "</p>");
